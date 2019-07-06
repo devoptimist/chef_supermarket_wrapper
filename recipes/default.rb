@@ -24,4 +24,9 @@ node.default['supermarket_omnibus']['fqdn'] = if node['supermarket_wrapper']['fq
                                                 node['cloud']['public_ipv4_addrs'].first
                                               end
 
+if node['platform_family'] == 'suse'
+  node.default['supermarket_omnibus']['package_url'] =
+    'https://packages.chef.io/files/stable/supermarket/3.3.3/el/7/supermarket-3.3.3-1.el7.x86_64.rpm'
+end
+
 include_recipe 'supermarket-omnibus-cookbook'
