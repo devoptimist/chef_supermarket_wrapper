@@ -9,30 +9,39 @@ remote_file '/bin/jq' do
   mode '0755'
 end
 
-node.default['supermarket_omnibus']['package_version'] =
-  node['supermarket_wrapper']['package_version']
-
-node.default['supermarket_omnibus']['package_repo'] =
-  node['supermarket_wrapper']['package_repo']
-
-node.default['supermarket_omnibus']['chef_server_url'] =
-  node['supermarket_wrapper']['chef_server_url'] if node['supermarket_wrapper']['chef_server_url'] != ''
-
-node.default['supermarket_omnibus']['chef_oauth2_app_id'] =
-  node['supermarket_wrapper']['chef_oauth2_app_id'] if node['supermarket_wrapper']['chef_oauth2_app_id'] != ''
-
-node.default['supermarket_omnibus']['chef_oauth2_secret'] =
-  node['supermarket_wrapper']['chef_oauth2_secret'] if node['supermarket_wrapper']['chef_oauth2_secret'] != ''
-
-node.default['supermarket_omnibus']['fqdn'] = if node['supermarket_wrapper']['fqdn'] != ''
-                                                node['supermarket_wrapper']['fqdn']
-                                              elsif node['cloud']
-                                                node['cloud']['public_ipv4_addrs'].first
-                                              end
-
 if node['platform_family'] == 'suse'
-  node.default['supermarket_omnibus']['package_url'] =
-    'https://packages.chef.io/files/stable/supermarket/3.3.3/el/7/supermarket-3.3.3-1.el7.x86_64.rpm'
+  platform = 'el'
+  platform_version = '7'
 end
 
-include_recipe 'supermarket-omnibus-cookbook'
+
+hostname = if node['supermarket_wrapper']['fqdn'] != ''
+              node['supermarket_wrapper']['fqdn']
+           elsif node['cloud'] && node['supermarket_wrapper']['cloud_public_address']
+              node['cloud']['public_ipv4_addrs'].first
+           else
+             node['ipaddress']
+           end
+
+#hostname hostname do
+#  compile_time        true
+#  hostname            String
+#  ipaddress           String
+#end
+
+config = node['supermarket_wrapper']['config'].to_hash
+
+config['fqdn'] = hostname
+
+chef_supermarket 'supermarket' do
+  channel node['supermarket_wrapper']['channel'].to_sym
+  version node['supermarket_wrapper']['version']
+  config config
+  chef_server_url node['supermarket_wrapper']['chef_server_url'] if node['supermarket_wrapper']['chef_server_url'] != ''
+  chef_oauth2_app_id node['supermarket_wrapper']['chef_oauth2_app_id']
+  chef_oauth2_secret node['supermarket_wrapper']['chef_oauth2_secret']
+  chef_oauth2_verify_ssl node['supermarket_wrapper']['chef_oauth2_verify_ssl']
+  accept_license node['supermarket_wrapper']['accept_license']
+  platform platform if platform
+  platform_version platform_version if platform_version
+end
