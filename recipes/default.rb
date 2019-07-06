@@ -3,6 +3,12 @@
 # Recipe:: default
 #
 # Copyright:: 2019, The Authors, All Rights Reserved.
+
+remote_file '/bin/jq' do
+  source node['supermarket_wrapper']['jq_url']
+  mode '0755'
+end
+
 node.default['supermarket_omnibus']['package_version'] =
   node['supermarket_wrapper']['package_version']
 
