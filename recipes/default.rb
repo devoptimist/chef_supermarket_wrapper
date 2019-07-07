@@ -23,12 +23,6 @@ hostname = if node['supermarket_wrapper']['fqdn'] != ''
              node['ipaddress']
            end
 
-#hostname hostname do
-#  compile_time        true
-#  hostname            String
-#  ipaddress           String
-#end
-
 config = node['supermarket_wrapper']['config'].to_hash
 
 config['fqdn'] = hostname
