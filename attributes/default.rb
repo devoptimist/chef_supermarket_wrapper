@@ -12,3 +12,7 @@ default['supermarket_wrapper']['config'] = {}
 default['supermarket_wrapper']['config']['features'] = 'tools, gravatar, collaborator_groups'
 default['supermarket_wrapper']['accept_license'] = true
 default['supermarket_wrapper']['cloud_public_address'] = false
+
+default['supermarket_wrapper']['cert'] = ''
+default['supermarket_wrapper']['cert_key'] = ''
+default['supermarket_wrapper']['cert_directory'] = '/etc/ssl/private'
