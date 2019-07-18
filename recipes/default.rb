@@ -10,6 +10,15 @@ remote_file '/bin/jq' do
 end
 
 if node['platform_family'] == 'suse'
+
+  group 'supermarket'
+
+  user 'supermarket' do
+    gid 'supermarket'
+    shell '/bin/bash'
+    home '/home/supermarket'
+  end
+
   platform = 'el'
   platform_version = '7'
 end
