@@ -1,0 +1,10 @@
+#!/bin/bash
+set -eu -o pipefail
+
+VAR1=$(cat <<EOF
+{
+  "supermarket_url": "https://<%= @fqdn %>"
+}
+EOF
+)
+echo "${VAR1}" | jq '.'

@@ -78,3 +78,10 @@ chef_supermarket 'supermarket' do
   platform platform if platform
   platform_version platform_version if platform_version
 end
+
+template node['supermarket_wrapper']['details_script_path'] do
+  source 'supermarket_details.sh.erb'
+  variables(
+    fqdn: hostname
+  )
+end
